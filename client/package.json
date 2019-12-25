@@ -2,7 +2,7 @@
   "name": "client",
   "version": "1.0.0",
   "description": "",
-  "main": "app/index.js",
+  "main": "app/index.html",
   "scripts": {
     "serve": "parcel serve ./app/index.html -p 8080"
   },
