@@ -32,6 +32,24 @@ export default class PushService {
         };
 
         const subscription = await this.serviceWorker.pushManager.subscribe(subscribeOptions);
-        console.log(JSON.stringify(subscription));
+        return this.saveUserSubscription(subscription);
+    }
+
+    async saveUserSubscription(subscription) {
+        const response = await fetch(`${process.env.SERVER_ENDPOINT}/save-subscription`, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(subscription)
+        });
+
+        return response;
+    }
+
+    requestPush() {
+        return fetch(`${process.env.SERVER_ENDPOINT}/push`, {
+            method: 'POST',
+        });
     }
 }
