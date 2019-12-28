@@ -1,0 +1,18 @@
+{
+  "name": "pwa-push-notification",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "start": "concurrently --kill-others \"cd client && npm run serve\" \"cd server && npm start\""
+  },
+  "repository": "git@github.com:ogunb/web-push-demo.git",
+  "author": "ogunb <babacanogun@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "concurrently": "^5.0.2"
+  }
+}
