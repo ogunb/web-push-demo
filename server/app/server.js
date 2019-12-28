@@ -21,8 +21,14 @@ app.use(cors());
 app.listen(3003, () => console.log('Example app listening on port 3003!'));
 
 app.post('/save-subscription', (req, res) => {
-    db.insert(req.body);
-    res.send({});
+    db.find({ "keys.auth": req.body.keys.auth }, (err, docs) => {
+        if (docs.length) {
+            return res.send({ message: 'Device is already subscribed.' });
+        }
+
+        db.insert(req.body);
+        return res.send({});
+    })
 });
 
 app.post('/push', (req, res) => {
