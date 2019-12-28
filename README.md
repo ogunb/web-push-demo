@@ -10,6 +10,8 @@ This is a basic demo for web push notifications. For this demo to work, you need
 * Go to http://localhost:8080 on your browser.
 * Click `Push Event` button.
 
+![Bill Murray Push Image](./push-murray.jpg)
+
 ## References
 
 * [Web Push Notifications: Timely, Relevant, and Precise](https://developers.google.com/web/fundamentals/push-notifications)
