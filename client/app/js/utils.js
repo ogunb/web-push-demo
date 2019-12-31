@@ -29,7 +29,3 @@ export function urlBase64ToUint8Array(base64String) {
 export function getPublicApplicationKey() {
     return urlBase64ToUint8Array(process.env.PUBLIC_KEY);
 }
-
-export function getPrivateApplicationKey() {
-    return urlBase64ToUint8Array(process.env.PRIVATE_KEY);
-}
