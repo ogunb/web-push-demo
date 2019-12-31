@@ -1,10 +1,10 @@
 import "babel-polyfill";
 import { registerServiceWorker } from './utils';
-import PushService from './PushService';
+import createPushService from './PushService';
 
 async function init() {
     const serviceWorker = await registerServiceWorker();
-    const pushService = new PushService(serviceWorker);
+    const pushService = createPushService(serviceWorker);
     pushService.askNotificationPermission();
     pushService.subscribeUser();
 

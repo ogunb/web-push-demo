@@ -1,55 +1,51 @@
-import { getPublicApplicationKey } from "./utils";
+import { getPublicApplicationKey } from './utils';
 
-export default class PushService {
-    constructor(serviceWorker) {
-        this.serviceWorker = serviceWorker;
-    }
-
-     async askNotificationPermission() {
+const createPushService = serviceWorker => {
+    async function askNotificationPermission() {
         // The API for getting notification permission has changed from taking a callback as an argument to taking promise.
         // We need to address both situations.
         const permissionResult = await new Promise((resolve, reject) => {
-             const permissionResult = Notification.requestPermission(function (result) {
-                 resolve(result);
-             });
+            const permissionResult = Notification.requestPermission(result => resolve(result));
+            if (permissionResult) { permissionResult.then(resolve, reject); }
+        });
 
-             if (permissionResult) {
-                 permissionResult.then(resolve, reject);
-             }
-         });
+        if (permissionResult !== 'granted') {
+            throw new Error('We weren\'t granted permission.');
+        }
 
-         if (permissionResult !== 'granted') {
-             throw new Error('We weren\'t granted permission.');
-         }
-
-         return permissionResult;
+        return permissionResult;
     };
 
-    async subscribeUser() {
+    async function subscribeUser() {
         const subscribeOptions = {
             userVisibleOnly: true,
-            applicationServerKey: getPublicApplicationKey(),
+            applicationServerKey: getPublicApplicationKey()
         };
 
-        const subscription = await this.serviceWorker.pushManager.subscribe(subscribeOptions);
-        return this.saveUserSubscription(subscription);
-    }
+        const subscription = await serviceWorker.pushManager.subscribe(subscribeOptions);
+        return saveUserSubscription(subscription);
+    };
 
-    async saveUserSubscription(subscription) {
-        const response = await fetch(`${process.env.SERVER_ENDPOINT}/save-subscription`, {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(subscription)
-        });
+    async function saveUserSubscription(subscription) {
+        const response = await fetch(
+            `${process.env.SERVER_ENDPOINT}/save-subscription`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(subscription)
+            }
+        );
 
         return response;
-    }
+    };
 
-    requestPush() {
-        return fetch(`${process.env.SERVER_ENDPOINT}/push`, {
-            method: 'POST',
-        });
-    }
-}
+    return Object.freeze({
+        askNotificationPermission,
+        subscribeUser,
+        requestPush: () => fetch(`${process.env.SERVER_ENDPOINT}/push`, { method: 'POST' }),
+    });
+};
+
+export default createPushService;
